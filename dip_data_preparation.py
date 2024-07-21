@@ -1,0 +1,62 @@
+#features:
+#growth since last bottom
+#days since last bottom
+#1 week growth
+#days since last top
+#growth volue past month
+#growth since last top(meh 7%)
+
+import yfinance as yf
+import matplotlib.pyplot as plt
+import numpy as np 
+import pandas as pd
+
+asset_name = "SOL-USD"
+#all_data = yf.download(asset_name)
+#short_data = yf.download(asset_name, start='2022-01-01', end='2022-07-01')
+no_light_data = pd.read_csv('trading bot/SOLUSD2024H.csv')
+print(no_light_data)
+no_light_data['date'] = no_light_data['timestamp'].astype('datetime64[s]')
+data = no_light_data.set_index('date')
+data = data[data.index < '2024-01-28']
+data = data['2024-01-26' < data.index]
+asset_df = data
+
+asset_df_reset = asset_df.reset_index()
+derivatives = np.gradient(asset_df['close'], asset_df_reset.index.values)
+second_order_derivatives = np.gradient(derivatives, asset_df_reset.index.values)
+asset_df['derivatives'], asset_df['second_order_derivatives'] = derivatives, second_order_derivatives
+asset_df['abs derivatives'] = abs(asset_df['derivatives'])
+
+zero_derivatives_mask = np.isclose(derivatives, 0, atol = 0.2)
+asset_df['close'][zero_derivatives_mask]
+#def growth_since_last_bottom(data):
+fig, ax1 = plt.subplots(figsize=(12, 6))
+
+# Plot the stock price on the first y-axis
+ax1.plot(asset_df.index, asset_df['close'], color='blue', label='Stock Price')
+ax1.set_xlabel('date')
+ax1.set_ylabel('price')
+ax1.legend(loc='upper left')
+
+# Create a second y-axis for the derivative
+ax2 = ax1.twinx()
+
+# Plot the derivative on the second y-axis
+ax2.plot(asset_df.index, derivatives, color='green', label='derivative')
+ax2.plot(asset_df.index, second_order_derivatives, color='purple', label='Second order derivative')
+ax2.set_ylabel('derivative')
+ax2.legend(loc='upper right')
+
+# Plot vertical lines where the derivative is close to 0
+for idx in asset_df.index[zero_derivatives_mask]:
+    ax1.axvline(x=idx, color='red', linestyle='--', linewidth=1)
+print(asset_df.describe())
+print(asset_df.sort_values(['abs derivatives']))
+
+plt.title(f'{asset_name} Price Derivative')
+plt.legend()
+plt.grid(True)
+
+plt.show()
+
