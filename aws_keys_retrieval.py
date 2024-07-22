@@ -32,7 +32,7 @@ def load_secrets():
         print("Loaded secrets from .env file")
     else:
         print(".env file not found. Attempting to load from AWS Secrets Manager")
-        secrets = get_secrets_from_aws()
+        secrets = get_secret_from_aws()
         for key, value in secrets.items():
             os.environ[key] = value
         print("Loaded secrets from AWS Secrets Manager")
