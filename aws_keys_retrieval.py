@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 def get_secret_from_aws():
 
     secret_name = "trading_bot/binance_keys"
-    region_name = "us-east-1"
+    region_name = "eu-west-1"
 
     # Create a Secrets Manager client
     session = boto3.session.Session()
