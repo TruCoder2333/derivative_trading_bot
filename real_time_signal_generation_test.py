@@ -16,13 +16,19 @@ week_ago = current_date - timedelta(days=7)
 
 # Format the date as a string (optional)
 week_ago_formatted = week_ago.strftime('%Y-%m-%d')
+print("Hello! Bot initialized!")
 client = Client(os.environ.get("BINANCE_API_KEY"), os.environ.get("BINANCE_API_SECRET"))
 
+if client:
+    print("Successfully connected to binance\nWaiting for the releveant timestamps")
+
 def analyze_market():
+    print("Fetching relevant data")
     df = get_historical_data('SOLUSDT', Client.KLINE_INTERVAL_1HOUR, week_ago_formatted)
     df = derivative_signal(df)
     df = transform_signals(df)
-    print(df)
+
+    print("Data fetched and analyzed!")
     last_signal = df['signal'].iloc[-1]
 
     print(last_signal)
