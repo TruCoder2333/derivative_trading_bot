@@ -1,10 +1,11 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from dotenv import load_dotenv
+from aws_keys_retrieval import load_secrets
 from binance.client import Client
 import os
 from data_preparation import get_historical_data
+from datetime import timedelta, datetime
 
 def transform_signals(df):
     # Create a boolean mask for non-zero values
@@ -73,13 +74,13 @@ def plot_signals(data):
     plt.show()
 
 if __name__=="__main__":
-    load_dotenv()
+    load_secrets()
 
-    client = Client(os.getenv("BINANCE_API_KEY"), os.getenv("BINANCE_API_SECRET"))  
+    client = Client(os.environ.get("BINANCE_API_KEY"), os.environ.get("BINANCE_API_SECRET"))
     account_info = client.get_account()
     symbol = 'SOLUSDT'
     interval = Client.KLINE_INTERVAL_1HOUR
-    start_date = "1 Jul, 2024"
+    start_date = (datetime.now() - timedelta(days=2)).strftime('%Y-%m-%d') 
 
     data = get_historical_data(symbol, interval, start_date)
     print(data)

@@ -3,20 +3,20 @@ import time
 from binance.client import Client
 import pandas as pd
 from datetime import datetime, timedelta, timezone
-from dotenv import load_dotenv
+from aws_keys_retrieval import load_secrets
 import os
 from signal_definition import *
 from data_preparation import get_historical_data
 from connection import buy_sol_with_all_usdt, sell_all_sol
 
 current_date = datetime.now()
-
+load_secrets
 # Calculate date from a week ago
 week_ago = current_date - timedelta(days=7)
 
 # Format the date as a string (optional)
 week_ago_formatted = week_ago.strftime('%Y-%m-%d')
-client = Client(os.getenv("BINANCE_API_KEY"), os.getenv("BINANCE_API_SECRET"))
+client = Client(os.environ.get("BINANCE_API_KEY"), os.environ.get("BINANCE_API_SECRET"))
 
 def analyze_market():
     df = get_historical_data('SOLUSDT', Client.KLINE_INTERVAL_1HOUR, week_ago_formatted)
@@ -27,7 +27,7 @@ def analyze_market():
 
     print(last_signal)
     if last_signal == 1:
-        print(f"Buy signal generated at {datetime.now()} ({datetime.fromtimestamp(datetime.now, tz=timezone.utc)} UTC)")
+        print(f"Buy signal generated at {datetime.now()}")
         transaction = buy_sol_with_all_usdt()
         print(transaction)
     elif last_signal == -1:
@@ -43,7 +43,7 @@ def analyze_market():
 symbol = 'SOLUSDT'
 interval = Client.KLINE_INTERVAL_1HOUR
 
-minutes_to_run = ["00", "30"]
+minutes_to_run = ["00", "20", "40"]
 
 for minute in minutes_to_run:
     schedule.every().hour.at(f":{minute}").do(analyze_market)

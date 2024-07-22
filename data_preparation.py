@@ -1,13 +1,13 @@
-from dotenv import load_dotenv
+from aws_keys_retrieval import load_secrets
 from binance.client import Client
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import ta
 
-load_dotenv()
+load_secrets()
 
-client = Client(os.getenv("BINANCE_API_KEY"), os.getenv("BINANCE_API_SECRET"))
+client = Client(os.environ.get("BINANCE_API_KEY"), os.environ.get("BINANCE_API_SECRET"))
 
 def get_historical_data(symbol, interval, start_date, end_date=None):
     klines=client.get_historical_klines(symbol, interval, start_date, end_date)

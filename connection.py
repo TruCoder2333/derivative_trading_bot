@@ -1,12 +1,13 @@
 from binance.client import Client
 import time
 from binance.exceptions import BinanceAPIException, BinanceOrderException
-from dotenv import load_dotenv
+from aws_keys_retrieval import load_secrets
 import os
 from math import floor
-load_dotenv()
 
-client = Client(os.getenv("BINANCE_API_KEY"), os.getenv("BINANCE_API_SECRET"))
+load_secrets()
+
+client = Client(os.environ.get("BINANCE_API_KEY"), os.environ.get("BINANCE_API_SECRET"))
 
 def buy_sol_in_usdt(quantity):
     try:
@@ -72,7 +73,7 @@ def buy_sol_with_all_usdt():
         account = client.get_account()
         usdt_balance = float(next(asset['free'] for asset in account['balances'] if asset['asset'] == 'USDT'))
         print(usdt_balance)
-        if usdt_balance == 0:
+        if round(usdt_balance) == 0:
             return "USDT balance is 0"
         # Place order using all available USDT
         order = client.create_order(
@@ -123,8 +124,8 @@ if __name__=="__main__":
         
         sol_balance = next((asset['free'] for asset in account_info['balances'] if asset['asset'] == 'SOL'), 0)
         print(f"Your SOL balance is: {sol_balance}")
-        print(buy_sol_in_usdt(10))
-        print(sell_all_sol())
+        print(buy_sol_with_all_usdt())
+        #print(sell_all_sol())
 
     except Exception as e:
         print(f"Connection error: {e}")
