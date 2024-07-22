@@ -2,6 +2,7 @@ import boto3
 from botocore.exceptions import ClientError
 import json
 from dotenv import load_dotenv
+import os
 
 def get_secret_from_aws():
 
