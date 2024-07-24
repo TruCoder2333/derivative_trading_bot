@@ -30,7 +30,7 @@ def analyze_market():
 
     print("Data fetched and analyzed!")
     last_signal = df['signal'].iloc[-1]
-
+    print(df.tail(3))
     print(last_signal)
     if last_signal == 1:
         print(f"Buy signal generated at {datetime.now()}")
@@ -49,7 +49,7 @@ def analyze_market():
 symbol = 'SOLUSDT'
 interval = Client.KLINE_INTERVAL_1HOUR
 
-minutes_to_run = ["00"]
+minutes_to_run = ["59"]
 
 for minute in minutes_to_run:
     schedule.every().hour.at(f":{minute}").do(analyze_market)
