@@ -24,14 +24,20 @@ if client:
 
 def analyze_market():
     print("Fetching relevant data")
-    df = get_historical_data('SOLUSDT', Client.KLINE_INTERVAL_1HOUR, week_ago_formatted)
+    df = get_historical_data(client, 'SOLUSDT', Client.KLINE_INTERVAL_1HOUR, week_ago_formatted)
     df = derivative_signal(df)
     df = transform_signals(df)
 
     print("Data fetched and analyzed!")
+    last_close = df['close'].iloc[-1]
     last_signal = df['signal'].iloc[-1]
+    last_derivative = df['derivatives'].iloc[-1]
+    last_sod = df['second_order_derivatives'].iloc[-1]
     print(df.tail(3))
-    print(last_signal)
+    print(f"Last price {last_signal}\n"
+          f"Last signal {last_signal}\n",
+          f"Last derivative {last_derivative}\n"
+          f"Last second order derivative {last_sod}")
     if last_signal == 1:
         print(f"Buy signal generated at {datetime.now()}")
         transaction = buy_sol_with_all_usdt()
@@ -49,7 +55,7 @@ def analyze_market():
 symbol = 'SOLUSDT'
 interval = Client.KLINE_INTERVAL_1HOUR
 
-minutes_to_run = ["59"]
+minutes_to_run = ["30", "59"]
 
 for minute in minutes_to_run:
     schedule.every().hour.at(f":{minute}").do(analyze_market)

@@ -5,11 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import ta
 
-load_secrets()
-
-client = Client(os.environ.get("BINANCE_API_KEY"), os.environ.get("BINANCE_API_SECRET"))
-
-def get_historical_data(symbol, interval, start_date, end_date=None):
+def get_historical_data(client, symbol, interval, start_date, end_date=None):
     klines=client.get_historical_klines(symbol, interval, start_date, end_date)
     data = pd.DataFrame(klines, columns = ['timestamp', 'open', 'high', 'low', 'close', 'volume', 'close_time', 'quote_asset_volume', 'number_of_trades', 'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume', 'ignore'])
     data = data[['timestamp', 'close', 'close_time', 'volume']]
@@ -24,13 +20,16 @@ def get_historical_data(symbol, interval, start_date, end_date=None):
     return data
 
 if __name__=="__main__":
+    load_secrets()
+
+    client = Client(os.environ.get("DATA_BINANCE_API_KEY"), os.environ.get("DATA_BINANCE_API_SECRET"))
     try:
         account_info = client.get_account()
         symbol = 'SOLUSDT'
         interval = Client.KLINE_INTERVAL_1HOUR
         start_date = "1 Jul, 2024"
 
-        historical_data = get_historical_data(symbol, interval, start_date)
+        historical_data = get_historical_data(client, symbol, interval, start_date)
         print(historical_data.iloc[1])
         historical_data.to_csv('trading bot/SOLUSD2024H.csv')
         print(historical_data)
