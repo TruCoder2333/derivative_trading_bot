@@ -24,7 +24,7 @@ if client:
 
 def analyze_market():
     print("Fetching relevant data")
-    df = get_historical_data(client, 'SOLUSDT', Client.KLINE_INTERVAL_1HOUR, week_ago_formatted)
+    df = get_historical_data(client, 'SOLUSDT', Client.KLINE_INTERVAL_15MINUTE, week_ago_formatted)
     df = derivative_signal(df)
     df = transform_signals(df)
 
