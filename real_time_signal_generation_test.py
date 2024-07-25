@@ -55,7 +55,7 @@ def analyze_market():
 symbol = 'SOLUSDT'
 interval = Client.KLINE_INTERVAL_15MINUTE
 
-minutes_to_run = ["14", "29", "44" "59"]
+minutes_to_run = ["14", "29", "44", "59"]
 
 for minute in minutes_to_run:
     schedule.every().hour.at(f":{minute}").do(analyze_market)
