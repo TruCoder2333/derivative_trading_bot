@@ -92,7 +92,7 @@ if __name__=="__main__":
     results = derivative_signal(data)
 
 
-    print(results)
+    print(results[['close', 'derivatives', 'second_order_derivatives', 'signal']].tail(14))
 
 
     # Assuming 'result' is your dataframe from the previous code

@@ -29,11 +29,12 @@ def analyze_market():
     df = transform_signals(df)
 
     print("Data fetched and analyzed!")
-    last_close = df['close'].iloc[-1]
-    last_signal = df['signal'].iloc[-1]
-    last_derivative = df['derivatives'].iloc[-1]
-    last_sod = df['second_order_derivatives'].iloc[-1]
-    print(df[['close', 'derivatives', 'second_order_derivatives', 'fod_change', 'sod_change']].tail(3))
+    last_close = df['close'].iloc[-2]
+    last_signal = df['signal'].iloc[-2]
+    last_derivative = df['derivatives'].iloc[-2]
+    last_sod = df['second_order_derivatives'].iloc[-2]
+    print(df[['close', 'derivatives', 'second_order_derivatives']].tail(5))
+    print(df[''])
     print(f"Last price {last_close}\n"
           f"Last signal {last_signal}\n",
           f"Last derivative {last_derivative}\n"
@@ -51,11 +52,10 @@ def analyze_market():
 
     
 
-
 symbol = 'SOLUSDT'
 interval = Client.KLINE_INTERVAL_15MINUTE
 
-minutes_to_run = ["14", "29", "44", "59"]
+minutes_to_run = ["15", "30", "45", "00"]
 
 for minute in minutes_to_run:
     schedule.every().hour.at(f":{minute}").do(analyze_market)
