@@ -10,10 +10,15 @@ def backtest(data):
     return data.dropna()
 
 def calculate_metrics(data):
-    total_return = (data['strategy_returns'] + 1).cumprod().iloc[-1] - 1
+    gross_total_return = (data['strategy_returns'] + 1).cumprod().iloc[-1] - 1
     sharpe_ratio = data['strategy_returns'].mean() / data['strategy_returns'].std() * np.sqrt(252)
     max_drawdown = (data['strategy_returns'] + 1).cumprod().div((data['strategy_returns'] + 1).cumprod().cummax()).min() - 1
-    return {'Total Return': total_return, 'Sharpe Ratio': sharpe_ratio, 'Max Drawdown': max_drawdown}
+    number_of_transanctions = abs(data['signal'].values).sum()
+    total_return = gross_total_return - 0.001 * number_of_transanctions
+    return {'Gross Total Return': gross_total_return, 
+            'Sharpe Ratio': sharpe_ratio, 
+            'Max Drawdown': max_drawdown, 
+            'Total Return': total_return}
 
 if __name__=="__main__":
     load_secrets()
@@ -21,8 +26,8 @@ if __name__=="__main__":
     client = Client(os.environ.get("DATA_BINANCE_API_KEY"), os.environ.get("DATA_BINANCE_API_SECRET"))
     account_info = client.get_account()
     symbol = 'SOLUSDT'
-    interval = Client.KLINE_INTERVAL_1HOUR
-    start_date = (datetime.now() - timedelta(days=28)).strftime('%Y-%m-%d') 
+    interval = Client.KLINE_INTERVAL_15MINUTE
+    start_date = (datetime.now() - timedelta(days=60)).strftime('%Y-%m-%d') 
 
     data = get_historical_data(client, symbol, interval, start_date)
     no_light_data = pd.read_csv('trading bot/SOLUSD2024H.csv')

@@ -29,7 +29,7 @@ if __name__=="__main__":
     client = Client(os.environ.get("DATA_BINANCE_API_KEY"), os.environ.get("DATA_BINANCE_API_SECRET"))
     account_info = client.get_account()
     symbol = 'SOLUSDT'
-    interval = Client.KLINE_INTERVAL_1HOUR
+    interval = Client.KLINE_INTERVAL_15MINUTE
     start_date = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d') 
 
     data = get_historical_data(client, symbol, interval, start_date)
@@ -42,7 +42,7 @@ if __name__=="__main__":
     asset_df['derivatives'], asset_df['second_order_derivatives'] = derivatives, second_order_derivatives
     asset_df['abs derivatives'] = abs(asset_df['derivatives'])
 
-    zero_derivatives_mask = np.isclose(derivatives, 0, atol = 0.4)
+    zero_derivatives_mask = np.isclose(derivatives, 0, atol = 0.25)
     asset_df['close'][zero_derivatives_mask]
     #def growth_since_last_bottom(data):
     fig, ax1 = plt.subplots(figsize=(12, 6))

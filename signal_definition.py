@@ -37,8 +37,8 @@ def derivative_signal(data):
     data['derivatives'], data['second_order_derivatives'] = derivatives, second_order_derivatives
     data['abs derivatives'] = abs(data['derivatives'])
     data = data.dropna()
-    data['fod_zero'] = np.isclose(data['derivatives'], 0, atol=0.4)
-    data['sod_zero'] = np.isclose(data['second_order_derivatives'], 0, atol=0.3)
+    data['fod_zero'] = np.isclose(data['derivatives'], 0, atol=0.25)
+    data['sod_zero'] = np.isclose(data['second_order_derivatives'], 0, atol=0.2)
     data['fod_change'] = sign_change(data['derivatives'])
     data['sod_change'] = sign_change(data['second_order_derivatives'])
     
@@ -79,7 +79,7 @@ if __name__=="__main__":
     client = Client(os.environ.get("DATA_BINANCE_API_KEY"), os.environ.get("DATA_BINANCE_API_SECRET"))
     account_info = client.get_account()
     symbol = 'SOLUSDT'
-    interval = Client.KLINE_INTERVAL_1HOUR
+    interval = Client.KLINE_INTERVAL_15MINUTE
     start_date = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d') 
 
     data = get_historical_data(client, symbol, interval, start_date)
